@@ -1,4 +1,4 @@
-﻿#include <opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 #include "tracking.hpp"
 #include "post_processing.hpp"
 #include "image_processing.hpp"  // ✅ 이미지 처리 모듈 추가
@@ -30,6 +30,11 @@ int main() {
     // ✅ 프레임 선명화 및 Edge 강조 적용
     frame = enhanceImage(frame);
 
+    // ✅ 사용자에게 ID 입력 받기
+    std::string id;
+    std::cout << "추적할 객체의 ID를 입력하세요: ";
+    std::cin >> id;
+
     cv::Rect2d boundingBox = cv::selectROI("Select Object", frame);
     if (boundingBox.width == 0 || boundingBox.height == 0) return -1;
 
@@ -54,6 +59,7 @@ int main() {
 
         // ✅ 바운딩 박스를 추가한 후 저장
         cv::rectangle(frame, boundingBox, cv::Scalar(255, 0, 0), 2);  // 파란색 바운딩 박스
+        cv::putText(frame, id, cv::Point(boundingBox.x, boundingBox.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2); // ID 표시
         cv::putText(frame, "Tracking", cv::Point(20, 30), cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 255, 0), 2); // 상태 표시
         cv::putText(frame, "FPS: " + std::to_string(int(fps)), cv::Point(20, 60), cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 255, 0), 2); // FPS 표시
 
